@@ -2,60 +2,41 @@ package de.gupta.commons.utility.io;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 
 public final class FileWritingUtility
 {
-	public static WriteResult writeFileWithForceAndCreateDirectory(final String filePath, final String content)
+	public static WriteResult writeFileWithForceAndCreateDirectory(final Path filePath, final String content)
 	{
 		return writeFile(filePath, content, WriteOption.OVERWRITE_EXISTING, WriteOption.CREATE_DIRECTORIES);
 	}
 
-	public static WriteResult writeFileAndCreateDirectory(final String filePath, final String content,
-														  final boolean force)
+	public static WriteResult writeFile(Path filePath, String content, WriteOption... options)
 	{
-		return Optional.of(force)
-					   .filter(f -> f)
-					   .map(_ -> writeFile(filePath, content, WriteOption.OVERWRITE_EXISTING,
-							   WriteOption.CREATE_DIRECTORIES))
-					   .orElseGet(
-							   () -> writeFile(filePath, content, WriteOption.CREATE_DIRECTORIES)
-					   );
-	}
-
-	public static WriteResult writeFileWithMergeAndCreateDirectory(final String filePath, final String content)
-	{
-		return writeFile(filePath, content, WriteOption.MERGE, WriteOption.CREATE_DIRECTORIES);
-	}
-
-	public static WriteResult writeFileWithMerge(final String filePath, final String content)
-	{
-		return writeFile(filePath, content, WriteOption.MERGE);
-	}
-
-
-	public static WriteResult writeFile(String filePath, String content, WriteOption... options)
-	{
-		if (filePath == null || filePath.isBlank())
-		{
-			return new WriteResult.Error(null, new IllegalArgumentException("File path cannot be null or empty"));
-		}
-
-		final var path = Paths.get(filePath);
 		try
 		{
+			if (filePath == null)
+			{
+				return new WriteResult.Error(null, new IllegalArgumentException("Path cannot be null"));
+			}
+
+			// Check for null content
+			if (content == null)
+			{
+				return new WriteResult.Error(filePath, new IllegalArgumentException("Content cannot be null"));
+			}
+
 			boolean overwriteExisting = Arrays.asList(options).contains(WriteOption.OVERWRITE_EXISTING);
 			boolean createDirectories = Arrays.asList(options).contains(WriteOption.CREATE_DIRECTORIES);
 			boolean merge = Arrays.asList(options).contains(WriteOption.MERGE);
 
-			if (Files.exists(path) && !overwriteExisting && !merge)
+			if (Files.exists(filePath) && !overwriteExisting && !merge)
 			{
-				return new WriteResult.FileAlreadyExists(path);
+				return new WriteResult.FileAlreadyExists(filePath);
 			}
 
-			Path parent = path.getParent();
+			Path parent = filePath.getParent();
 			if (parent != null && !FileUtility.pathExists(parent))
 			{
 				if (createDirectories)
@@ -68,22 +49,44 @@ public final class FileWritingUtility
 				}
 			}
 
-			if (merge && Files.exists(path))
+			if (merge && Files.exists(filePath))
 			{
-				String existingContent = Files.readString(path);
-				Files.writeString(path, existingContent + content);
+				String existingContent = Files.readString(filePath);
+				Files.writeString(filePath, existingContent + content);
 			}
 			else
 			{
-				Files.writeString(path, content);
+				Files.writeString(filePath, content);
 			}
 			return new WriteResult.Success();
 
 		}
 		catch (Exception e)
 		{
-			return new WriteResult.Error(path, e);
+			return new WriteResult.Error(filePath, e);
 		}
+	}
+
+	public static WriteResult writeFileAndCreateDirectory(final Path filePath, final String content,
+														  final boolean force)
+	{
+		return Optional.of(force)
+					   .filter(f -> f)
+					   .map(_ -> writeFile(filePath, content, WriteOption.OVERWRITE_EXISTING,
+							   WriteOption.CREATE_DIRECTORIES))
+					   .orElseGet(
+							   () -> writeFile(filePath, content, WriteOption.CREATE_DIRECTORIES)
+					   );
+	}
+
+	public static WriteResult writeFileWithMergeAndCreateDirectory(final Path filePath, final String content)
+	{
+		return writeFile(filePath, content, WriteOption.MERGE, WriteOption.CREATE_DIRECTORIES);
+	}
+
+	public static WriteResult writeFileWithMerge(final Path filePath, final String content)
+	{
+		return writeFile(filePath, content, WriteOption.MERGE);
 	}
 
 	private FileWritingUtility()
