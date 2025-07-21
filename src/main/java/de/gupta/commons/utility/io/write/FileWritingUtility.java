@@ -1,4 +1,6 @@
-package de.gupta.commons.utility.io;
+package de.gupta.commons.utility.io.write;
+
+import de.gupta.commons.utility.io.read.FileReaderUtility;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +39,7 @@ public final class FileWritingUtility
 			}
 
 			Path parent = filePath.getParent();
-			if (parent != null && !FileUtility.pathExists(parent))
+			if (parent != null && !FileReaderUtility.pathExists(parent))
 			{
 				if (createDirectories)
 				{
