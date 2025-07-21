@@ -1,5 +1,6 @@
 package de.gupta.commons.utility.javaLanguage.packages;
 
+import de.gupta.commons.utility.javaLanguage.comments.CommentManager;
 import de.gupta.commons.utility.string.StringSanitizationUtility;
 
 import java.util.Arrays;
@@ -9,6 +10,24 @@ import java.util.regex.Pattern;
 
 public final class PackageExtractor
 {
+	public static String extractBasePackageName(final String classContent, final String currentPackage)
+	{
+		return Optional.of(PackageExtractor.extractPackageName(classContent))
+					   .map(String::trim)
+					   .map(fullPackage ->
+							   {
+								   final int index = fullPackage.lastIndexOf(currentPackage);
+								   final String basePackage = index >= 0 ? fullPackage.substring(0, index) :
+										   fullPackage;
+
+								   return basePackage.endsWith(".") ? basePackage.substring(0, basePackage.length() - 1) :
+										   basePackage;
+							   }
+					   )
+					   .orElseThrow(
+							   () -> new IllegalArgumentException("Could not extract package name from model file"));
+	}
+
 	public static String extractPackageName(final String classContent)
 	{
 		final Pattern packagePattern = Pattern.compile("^\\s*package\\s+([\\w.]+)\\s*;.*$");
@@ -27,23 +46,6 @@ public final class PackageExtractor
 					   .map(m -> m.group(1))
 					   .findFirst()
 					   .orElseThrow(() -> new IllegalArgumentException("No package found in the given class content"));
-	}
-
-	public static String extractBasePackageName(final String classContent, final String currentPackage)
-	{
-		return Optional.of(PackageExtractor.extractPackageName(classContent))
-					   .map(String::trim)
-					   .map(fullPackage ->
-							   {
-								   final int index = fullPackage.lastIndexOf(currentPackage);
-								   final String basePackage = index >= 0 ? fullPackage.substring(0, index) :
-										   fullPackage;
-
-								   return basePackage.endsWith(".") ? basePackage.substring(0, basePackage.length() -1) : basePackage;
-							   }
-					   )
-					   .orElseThrow(
-							   () -> new IllegalArgumentException("Could not extract package name from model file"));
 	}
 
 	private PackageExtractor()

@@ -1,13 +1,9 @@
-package de.gupta.commons.utility.javaLanguage.packages;
+package de.gupta.commons.utility.javaLanguage.comments;
 
 import java.util.regex.Pattern;
 
 public final class CommentManager
 {
-	private CommentManager()
-	{
-	}
-
 	public static String removeBlockComments(final String content)
 	{
 		if (content == null || content.isEmpty()) return content;
@@ -57,14 +53,19 @@ public final class CommentManager
 		return result.toString();
 	}
 
+	public static boolean doesLineNotStartWithAComment(final String line)
+	{
+		return !doesLineStartWithAComment(line);
+	}
+
 	public static boolean doesLineStartWithAComment(final String line)
 	{
 		return line.trim().startsWith("//") || line.trim().startsWith("/*");
 	}
 
-	public static boolean doesLineNotStartWithAComment(final String line)
+	public static boolean doesLineNotContainAComment(final String line)
 	{
-		return !doesLineStartWithAComment(line);
+		return !doesLineContainAComment(line);
 	}
 
 	public static boolean doesLineContainAComment(final String line)
@@ -74,9 +75,9 @@ public final class CommentManager
 		return pattern.matcher(line).find();
 	}
 
-	public static boolean doesLineNotContainAComment(final String line)
+	public static boolean doesLineNotEndWithAComment(final String line)
 	{
-		return !doesLineContainAComment(line);
+		return !doesLineEndWithAComment(line);
 	}
 
 	public static boolean doesLineEndWithAComment(final String line)
@@ -84,8 +85,7 @@ public final class CommentManager
 		return line.trim().endsWith("//") || line.trim().endsWith("*/");
 	}
 
-	public static boolean doesLineNotEndWithAComment(final String line)
+	private CommentManager()
 	{
-		return !doesLineEndWithAComment(line);
 	}
 }

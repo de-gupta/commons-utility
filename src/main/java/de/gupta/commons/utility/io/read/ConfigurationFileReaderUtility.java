@@ -1,4 +1,4 @@
-package de.gupta.commons.utility.io;
+package de.gupta.commons.utility.io.read;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +31,7 @@ public final class ConfigurationFileReaderUtility
 		return Optional.ofNullable(configFilePath)
 					   .map(String::trim)
 					   .map(Path::of)
-					   .filter(FileUtility::pathExists)
+					   .filter(FileReaderUtility::pathExists)
 					   .filter(Files::isRegularFile)
 					   .filter(Files::isReadable)
 					   .isPresent();
