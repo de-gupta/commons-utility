@@ -4,7 +4,7 @@
 
     <groupId>io.github.de-gupta</groupId>
     <artifactId>commons-utility</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
 
     <name>commons-utility</name>
     <description>A library with common utility functions for java</description>
@@ -44,7 +44,7 @@
         <connection>scm:git:git@github.com:de-gupta/commons-utility.git</connection>
         <developerConnection>scm:git:git@github.com:de-gupta/commons-utility.git</developerConnection>
         <url>https://github.com/de-gupta/commons-utility.git</url>
-        <tag>HEAD</tag>
+        <tag>v0.0.3</tag>
     </scm>
 
     <build>
