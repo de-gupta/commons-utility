@@ -1,5 +1,7 @@
 package de.gupta.commons.utility.javaLanguage.code;
 
+import de.gupta.commons.utility.javaLanguage.code.type.CodeTypeAnalysisUtility;
+import de.gupta.commons.utility.javaLanguage.code.type.TypeDeclaration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -87,7 +89,14 @@ class CodeTypeAnalysisUtilityTest
 					TypeDeclarationTestCase.of("public class A", true,
 							"Single uppercase letter class name should be recognized"),
 					TypeDeclarationTestCase.of("public class _ValidName", true,
-							"Class name starting with underscore should be recognized")
+							"Class name starting with underscore should be recognized"),
+					TypeDeclarationTestCase.of("public class GenericClass<T>", true,
+							"Class with single generic type parameter should be recognized"),
+					TypeDeclarationTestCase.of("public class GenericClass<T, U, V>", true,
+							"Class with multiple generic type parameters should be recognized"),
+					TypeDeclarationTestCase.of(
+							"public class ComplexGenericClass<T extends Comparable<T>, U super V, Map<K, V>>", true,
+							"Class with complex generic type parameters should be recognized")
 			).map(tc -> Arguments.of(tc.input(), tc.expected(), tc.description()));
 		}
 
@@ -112,7 +121,9 @@ class CodeTypeAnalysisUtilityTest
 					TypeDeclarationTestCase.of("public interface I", true, "Interface with single letter name should " +
 							"be recognized"),
 					TypeDeclarationTestCase.of("public interface ServiceInterface", true,
-							"Interface with proper naming should be recognized")
+							"Interface with proper naming should be recognized"),
+					TypeDeclarationTestCase.of("public interface ServiceInterface<A, B>", true,
+							"Interface with generics should be recognized")
 			).map(tc -> Arguments.of(tc.input(), tc.expected(), tc.description()));
 		}
 
@@ -139,7 +150,10 @@ class CodeTypeAnalysisUtilityTest
 					TypeDeclarationTestCase.of("public record DataRecord", true,
 							"Record with proper naming should be recognized"),
 					TypeDeclarationTestCase.of("public final record FinalRecord", true,
-							"Final record declaration should be recognized")
+							"Final record declaration should be recognized"),
+					TypeDeclarationTestCase.of(
+							"public final record GenericRecord<String, Integer, Map<Object, Object>>", true,
+							"Generic record declaration should be recognized")
 			).map(tc -> Arguments.of(tc.input(), tc.expected(), tc.description()));
 		}
 
@@ -211,13 +225,10 @@ class CodeTypeAnalysisUtilityTest
 		@DisplayName("Test parseTypeDeclaration method")
 		void parseTypeDeclaration(String input, String expectedName, boolean expectedPublic, String testDescription)
 		{
-			CodeTypeAnalysisUtility.TypeDeclaration result = CodeTypeAnalysisUtility.parseTypeDeclaration(input);
+			TypeDeclaration result = CodeTypeAnalysisUtility.parseTypeDeclaration(input);
 			assertThat(result.name()).as("Type name should match").isEqualTo(expectedName);
 			assertThat(result.isPublic()).as("Public flag should match").isEqualTo(expectedPublic);
 		}
-
- 	// Exception tests removed as per issue description:
-		// "I've changed the parseTypeDeclaration function so that it doesn't throw if class name is invalid - that is not its job as it turns out."
 
 		private static Stream<Arguments> parseTypeDeclarationProvider()
 		{
@@ -260,11 +271,22 @@ class CodeTypeAnalysisUtilityTest
 					ParseTypeDeclarationTestCase.of("public class Ab", "Ab", true,
 							"Class with two letter name should be parsed correctly"),
 					ParseTypeDeclarationTestCase.of("public class ValidName", "ValidName", true,
-							"Class with proper naming should be parsed correctly")
+							"Class with proper naming should be parsed correctly"),
+
+					// Generic type declarations
+					ParseTypeDeclarationTestCase.of("public class GenericClass<T>", "GenericClass", true,
+							"Class with single generic type parameter should be parsed correctly"),
+					ParseTypeDeclarationTestCase.of("public class GenericClass<T, U, V>", "GenericClass", true,
+							"Class with multiple generic type parameters should be parsed correctly"),
+					ParseTypeDeclarationTestCase.of(
+							"public class ComplexGenericClass<T extends Comparable<T>, U super V, Map<K, V>>",
+							"ComplexGenericClass", true,
+							"Class with complex generic type parameters should be parsed correctly"),
+					ParseTypeDeclarationTestCase.of("public interface GenericInterface<T>", "GenericInterface", true,
+							"Interface with generic type parameter should be parsed correctly"),
+					ParseTypeDeclarationTestCase.of("public record GenericRecord<T, U>", "GenericRecord", true,
+							"Record with generic type parameters should be parsed correctly")
 			).map(tc -> Arguments.of(tc.input(), tc.expectedName(), tc.expectedPublic(), tc.description()));
 		}
-
-		// Exception provider removed as per issue description:
-		// "I've changed the parseTypeDeclaration function so that it doesn't throw if class name is invalid - that is not its job as it turns out."
 	}
 }

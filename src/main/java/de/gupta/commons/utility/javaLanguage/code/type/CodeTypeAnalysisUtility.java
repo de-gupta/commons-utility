@@ -1,6 +1,6 @@
-package de.gupta.commons.utility.javaLanguage.code;
+package de.gupta.commons.utility.javaLanguage.code.type;
 
-import de.gupta.commons.utility.javaLanguage.classes.ClassNameUtility;
+import de.gupta.commons.utility.javaLanguage.code.EmptySourceCodeException;
 import de.gupta.commons.utility.string.StringSanitizationUtility;
 import de.gupta.commons.utility.string.StringSearchUtility;
 import de.gupta.commons.utility.string.StringTokenizeUtility;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 public final class CodeTypeAnalysisUtility
 {
-	private static String findUniqueTypeName(final String sourceCode)
+	public static String findUniqueTypeName(final String sourceCode)
 	{
 		return Optional.ofNullable(sourceCode)
 					   .filter(StringSanitizationUtility::isStringNonBlank)
@@ -59,7 +59,7 @@ public final class CodeTypeAnalysisUtility
 	public static boolean isTypeDeclaration(String line)
 	{
 		String pattern = "^(\\s*)(public\\s+|private\\s+|protected\\s+|static\\s+|final\\s+|abstract\\s+)*" +
-				"(class|interface|record)\\s+[A-Za-z0-9_$]+";
+				"(class|interface|record)\\s+[A-Za-z0-9_$]+(<.*>)?";
 		return line.matches(pattern);
 	}
 
@@ -76,7 +76,7 @@ public final class CodeTypeAnalysisUtility
 	private static boolean containsAUniquePublicDeclaration(final Collection<TypeDeclaration> typeDeclarations)
 	{
 		return typeDeclarations.stream()
-							   .filter(td -> td.isPublic)
+							   .filter(TypeDeclaration::isPublic)
 							   .distinct()
 							   .count() == 1;
 	}
@@ -84,14 +84,14 @@ public final class CodeTypeAnalysisUtility
 	private static Optional<TypeDeclaration> aPublicDeclarationFrom(final Collection<TypeDeclaration> typeDeclarations)
 	{
 		return typeDeclarations.stream()
-							   .filter(td -> td.isPublic)
+							   .filter(TypeDeclaration::isPublic)
 							   .findFirst();
 	}
 
 	private static boolean containsAUniqueNonPublicDeclaration(final Collection<TypeDeclaration> typeDeclarations)
 	{
 		return typeDeclarations.stream()
-							   .filter(td -> !td.isPublic)
+							   .filter(td -> !td.isPublic())
 							   .distinct()
 							   .count() == 1;
 	}
@@ -100,7 +100,7 @@ public final class CodeTypeAnalysisUtility
 			final Collection<TypeDeclaration> typeDeclarations)
 	{
 		return typeDeclarations.stream()
-							   .filter(td -> !td.isPublic)
+							   .filter(td -> !td.isPublic())
 							   .findFirst();
 	}
 
@@ -122,18 +122,5 @@ public final class CodeTypeAnalysisUtility
 							   Set.of("\\s", "<", ">", "{")))
 					   .map(array -> array[0])
 					   .orElseThrow(() -> new IllegalArgumentException("Line cannot be null or blank"));
-	}
-
-	public record TypeDeclaration(String name, boolean isPublic)
-	{
-		static TypeDeclaration of(final String name, final boolean isPublic)
-		{
-			return new TypeDeclaration(name, isPublic);
-		}
-
-		boolean isTypeNameValid()
-		{
-			return ClassNameUtility.hasValidJavaClassNameFormat(name());
-		}
 	}
 }

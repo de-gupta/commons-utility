@@ -1,4 +1,4 @@
-package de.gupta.commons.utility.javaLanguage.code;
+package de.gupta.commons.utility.javaLanguage.code.type;
 
 public class NoDeclarationsFoundException extends RuntimeException
 {
