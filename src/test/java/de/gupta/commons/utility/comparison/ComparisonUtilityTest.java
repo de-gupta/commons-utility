@@ -44,7 +44,7 @@ class ComparisonUtilityTest
 
 		@ParameterizedTest(name = "{4}")
 		@MethodSource("customComparatorProvider")
-		@DisplayName("Test with custom comparator")
+		@DisplayName("Test with custom string comparator")
 		void testCustomComparator(String value, String reference, ComparisonType comparisonType, boolean expected,
 								  String description)
 		{
@@ -52,6 +52,18 @@ class ComparisonUtilityTest
 
 			boolean result = ComparisonUtility.doesThisValueSatisfyTheComparison(value, reference, comparisonType,
 					caseInsensitiveComparator);
+
+			assertThat(result).as(description).isEqualTo(expected);
+		}
+
+		@ParameterizedTest(name = "{5}")
+		@MethodSource("customIntegerComparatorProvider")
+		@DisplayName("Test with custom integer comparator")
+		void testCustomIntegerComparator(Integer value, Integer reference, ComparisonType comparisonType,
+										 Comparator<Integer> comparator, boolean expected, String description)
+		{
+			boolean result =
+					ComparisonUtility.doesThisValueSatisfyTheComparison(value, reference, comparisonType, comparator);
 
 			assertThat(result).as(description).isEqualTo(expected);
 		}
@@ -178,6 +190,81 @@ class ComparisonUtilityTest
 										 "Case-insensitive comparison should not consider different case strings as not equal"))
 						 .map(tc -> Arguments.of(tc.value(), tc.reference(), tc.comparisonType(), tc.expected(),
 								 tc.description()));
+		}
+
+		private static Stream<Arguments> customIntegerComparatorProvider()
+		{
+			// Absolute value comparator - compares integers based on their absolute values
+			Comparator<Integer> absoluteValueComparator = (a, b) -> Integer.compare(Math.abs(a), Math.abs(b));
+
+			// Reverse comparator - reverses the natural ordering
+			Comparator<Integer> reverseComparator = (a, b) -> Integer.compare(b, a);
+
+			// Even-first comparator - even numbers come before odd numbers, then natural ordering
+			Comparator<Integer> evenFirstComparator = (a, b) ->
+			{
+				boolean aIsEven = a % 2 == 0;
+				boolean bIsEven = b % 2 == 0;
+
+				if (aIsEven && !bIsEven)
+				{
+					return -1;
+				}
+				else if (!aIsEven && bIsEven)
+				{
+					return 1;
+				}
+				else
+				{
+					return Integer.compare(a, b);
+				}
+			};
+
+			return Stream.of(
+								 // Absolute value comparator tests
+								 CustomIntegerComparisonTestCase.of(5, 5, ComparisonType.EQUAL, absoluteValueComparator, true,
+										 "Equal absolute values should satisfy EQUAL comparison"),
+								 CustomIntegerComparisonTestCase.of(-5, 5, ComparisonType.EQUAL, absoluteValueComparator, true,
+										 "Different sign but same absolute value should satisfy EQUAL comparison"),
+								 CustomIntegerComparisonTestCase.of(10, 5, ComparisonType.GREATER_THAN, absoluteValueComparator,
+										 true, "Larger absolute value should satisfy GREATER_THAN comparison"),
+								 CustomIntegerComparisonTestCase.of(-10, 5, ComparisonType.GREATER_THAN, absoluteValueComparator,
+										 true, "Negative with larger absolute value should satisfy GREATER_THAN comparison"),
+								 CustomIntegerComparisonTestCase.of(3, 5, ComparisonType.LESS_THAN, absoluteValueComparator, true,
+										 "Smaller absolute value should satisfy LESS_THAN comparison"),
+
+								 // Reverse comparator tests
+								 CustomIntegerComparisonTestCase.of(5, 5, ComparisonType.EQUAL, reverseComparator, true,
+										 "Equal values should satisfy EQUAL comparison with reverse comparator"),
+								 CustomIntegerComparisonTestCase.of(3, 5, ComparisonType.GREATER_THAN, reverseComparator, true,
+										 "Smaller value should satisfy GREATER_THAN comparison with reverse comparator"),
+								 CustomIntegerComparisonTestCase.of(10, 5, ComparisonType.LESS_THAN, reverseComparator, true,
+										 "Larger value should satisfy LESS_THAN comparison with reverse comparator"),
+
+								 // Even-first comparator tests
+								 CustomIntegerComparisonTestCase.of(4, 6, ComparisonType.LESS_THAN, evenFirstComparator, true,
+										 "Smaller even number should satisfy LESS_THAN comparison with even-first comparator"),
+								 CustomIntegerComparisonTestCase.of(4, 5, ComparisonType.LESS_THAN, evenFirstComparator, true,
+										 "Even number should satisfy LESS_THAN comparison with odd number in even-first comparator"),
+								 CustomIntegerComparisonTestCase.of(7, 6, ComparisonType.LESS_THAN_OR_EQUAL,
+										 evenFirstComparator, false,
+										 "Odd number should not satisfy LESS_THAN_OR_EQUAL comparison with even " +
+												 "number in even-first comparator"))
+						 .map(tc -> Arguments.of(tc.value(), tc.reference(), tc.comparisonType(), tc.comparator(),
+								 tc.expected(), tc.description()));
+		}
+
+		private record CustomIntegerComparisonTestCase(Integer value, Integer reference, ComparisonType comparisonType,
+													   Comparator<Integer> comparator, boolean expected,
+													   String description)
+		{
+			static CustomIntegerComparisonTestCase of(Integer value, Integer reference, ComparisonType comparisonType,
+													  Comparator<Integer> comparator, boolean expected,
+													  String description)
+			{
+				return new CustomIntegerComparisonTestCase(value, reference, comparisonType, comparator, expected,
+						description);
+			}
 		}
 
 		private record IntegerComparisonTestCase(Integer value, Integer reference, ComparisonType comparisonType,
