@@ -27,12 +27,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.de-gupta</groupId>
-            <artifactId>aletheia</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.jupiter.version}</version>
