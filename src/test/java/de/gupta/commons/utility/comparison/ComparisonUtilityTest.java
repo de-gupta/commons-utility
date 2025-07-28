@@ -132,6 +132,10 @@ class ComparisonUtilityTest
 										 "Different strings should not satisfy EQUAL comparison"),
 								 StringComparisonTestCase.of("", "", ComparisonType.EQUAL, true,
 										 "Empty strings should satisfy EQUAL comparison"),
+								 StringComparisonTestCase.of("null", null, ComparisonType.EQUAL, false,
+										 "If one string is null, they should not be equal"),
+								 StringComparisonTestCase.of(null, "null", ComparisonType.EQUAL, false,
+										 "If one string is null, they should not be equal"),
 								 StringComparisonTestCase.of(null, null, ComparisonType.EQUAL, false,
 										 "Null strings should not satisfy EQUAL comparison"),
 								 StringComparisonTestCase.of(null, null, ComparisonType.LESS_THAN_OR_EQUAL, false,
@@ -195,7 +199,7 @@ class ComparisonUtilityTest
 		private static Stream<Arguments> customIntegerComparatorProvider()
 		{
 			// Absolute value comparator - compares integers based on their absolute values
-			Comparator<Integer> absoluteValueComparator = (a, b) -> Integer.compare(Math.abs(a), Math.abs(b));
+			Comparator<Integer> absoluteValueComparator = Comparator.comparingInt(Math::abs);
 
 			// Reverse comparator - reverses the natural ordering
 			Comparator<Integer> reverseComparator = (a, b) -> Integer.compare(b, a);
