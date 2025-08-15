@@ -4,7 +4,7 @@
 
     <groupId>io.github.de-gupta</groupId>
     <artifactId>athena</artifactId>
-    <version>0.0.7</version>
+    <version>0.0.8-SNAPSHOT</version>
 
     <name>${artifactId}</name>
     <description>A library with common utility functions for java</description>
@@ -52,7 +52,7 @@
         <connection>scm:git:git@github.com:de-gupta/athena.git</connection>
         <developerConnection>scm:git:git@github.com:de-gupta/athena.git</developerConnection>
         <url>https://github.com/de-gupta/athena.git</url>
-        <tag>v0.0.7</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <build>
