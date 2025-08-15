@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.de-gupta</groupId>
-    <artifactId>commons-utility</artifactId>
+    <artifactId>athena</artifactId>
     <version>0.0.7-SNAPSHOT</version>
 
-    <name>commons-utility</name>
+    <name>${artifactId}</name>
     <description>A library with common utility functions for java</description>
-    <url>https://github.com/de-gupta/commons-utility.git</url>
+    <url>https://github.com/de-gupta/athena.git</url>
 
     <properties>
         <maven.compiler.source>24</maven.compiler.source>
@@ -49,9 +49,9 @@
     </dependencies>
 
     <scm>
-        <connection>scm:git:git@github.com:de-gupta/commons-utility.git</connection>
-        <developerConnection>scm:git:git@github.com:de-gupta/commons-utility.git</developerConnection>
-        <url>https://github.com/de-gupta/commons-utility.git</url>
+        <connection>scm:git:git@github.com:de-gupta/athena.git</connection>
+        <developerConnection>scm:git:git@github.com:de-gupta/athena.git</developerConnection>
+        <url>https://github.com/de-gupta/athena.git</url>
         <tag>HEAD</tag>
     </scm>
 
