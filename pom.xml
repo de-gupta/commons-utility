@@ -3,17 +3,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.de-gupta</groupId>
-    <artifactId>commons-utility</artifactId>
-    <version>0.0.3</version>
+    <artifactId>athena</artifactId>
+    <version>0.0.7</version>
 
-    <name>commons-utility</name>
+    <name>${artifactId}</name>
     <description>A library with common utility functions for java</description>
-    <url>https://github.com/de-gupta/commons-utility.git</url>
+    <url>https://github.com/de-gupta/athena.git</url>
 
     <properties>
         <maven.compiler.source>24</maven.compiler.source>
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <aletheia.version>0.0.5</aletheia.version>
 
         <junit.jupiter.version>5.13.1</junit.jupiter.version>
         <assertj.core.version>3.27.3</assertj.core.version>
@@ -26,6 +28,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.de-gupta</groupId>
+            <artifactId>aletheia</artifactId>
+            <version>${aletheia.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -41,10 +49,10 @@
     </dependencies>
 
     <scm>
-        <connection>scm:git:git@github.com:de-gupta/commons-utility.git</connection>
-        <developerConnection>scm:git:git@github.com:de-gupta/commons-utility.git</developerConnection>
-        <url>https://github.com/de-gupta/commons-utility.git</url>
-        <tag>v0.0.3</tag>
+        <connection>scm:git:git@github.com:de-gupta/athena.git</connection>
+        <developerConnection>scm:git:git@github.com:de-gupta/athena.git</developerConnection>
+        <url>https://github.com/de-gupta/athena.git</url>
+        <tag>v0.0.7</tag>
     </scm>
 
     <build>
@@ -54,7 +62,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven.release.plugin.version}</version>
                 <configuration>
-                    <goals>install</goals>
+                    <goals>deploy</goals>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>

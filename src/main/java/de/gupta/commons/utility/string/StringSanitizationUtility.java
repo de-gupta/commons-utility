@@ -22,6 +22,11 @@ public final class StringSanitizationUtility
 		return input == null || input.isBlank();
 	}
 
+	public static boolean isStringTrimmed(final String input)
+	{
+		return input != null && input.trim().equals(input);
+	}
+
 	public static String[] breakIntoLines(final String input)
 	{
 		return input.split("\\r?\\n", -1);
